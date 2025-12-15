@@ -78,3 +78,10 @@ ggplot(top_words, aes(x = reorder(word, n), y = n, fill = label)) +
   labs(title = "Top Words That Signal High vs Low Access",
        x = "Words", y = "Count")
 ```
+
+
+## Reflection
+**Why I Used Sample Text:**
+My original goal was to compare grocery prices between Brownsville (my neighborhood) and Lower Manhattan stores like Trader Joe’s. I walked the aisles, took photos, and recorded prices for 17–20 items at two local stores. It took way more time than I expected — and I still hadn’t touched Manhattan data. Rather than rush and risk sloppy numbers, I decided to pause the price comparison and practice the text-classification skills we learned in 607.
+Instead of real reviews (which need scraping, cleaning, and label-checking), I built a tiny sample of 15 made-up sentences that feel like real Yelp or 311 posts. This let me focus on learning the workflow: clean text → tokenize → train model → check accuracy → make pictures.
+Now that I understand the process, I can take the same pipeline to real reviews and prices whenever I’m ready — no scrambling, no messy data, just a clear path forward.
