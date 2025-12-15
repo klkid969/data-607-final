@@ -1,0 +1,6 @@
+text,label
+"Rat droppings found in store",low_access
+"Store has moldy bread on shelves",low_access
+"Nice clean deli with fresh food",high_access
+"Expensive but high quality produce",high_access
+"No healthy options in this area",low_access

@@ -1,0 +1,6 @@
+text,label
+"Low income area with limited supermarket access",low_access
+"High income neighborhood with many grocery stores",high_access
+"Rural area far from fresh food sources",low_access
+"Urban area with abundant fresh produce markets",high_access
+"Food desert with no nearby supermarkets",low_access
