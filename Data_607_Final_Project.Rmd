@@ -1,0 +1,80 @@
+---
+title: "Data 607 Final Project"
+author: "Kevin Martin"
+date: "2025-12-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Load Packages
+```{r packages}
+library(tidyverse)
+library(tidytext)
+library(caret)
+library(e1071)
+```
+
+# Load data
+```{r load_data}
+yelp <- read_csv("data/yelp_grocery_reviews.csv")
+complaints <- read_csv("data/nyc_311_food_complaints.csv")
+usda <- read_csv("data/usda_food_access_descriptions.csv")
+all_text <- bind_rows(yelp, complaints, usda)
+```
+
+# Clean text
+```{r Clean_text}
+cleaned <- all_text %>%
+  mutate(text = str_to_lower(text)) %>%
+  mutate(text = str_replace_all(text, "[^a-z\\s]", "")) %>%
+  unnest_tokens(word, text)
+```
+
+# Split data
+```{r split_and_model}
+set.seed(123)
+train_index <- createDataPartition(cleaned$label, p = 0.8, list = FALSE)
+train_data <- cleaned[train_index, ]
+test_data  <- cleaned[-train_index, ]
+
+# Model
+model <- naiveBayes(label ~ word, data = train_data)
+predictions <- predict(model, test_data)
+```
+
+# Results
+```{r results}
+confusionMatrix(factor(predictions), factor(test_data$label))
+```
+
+```{r confusion_matrix_plot}
+library(ggplot2)
+
+# Make a pretty heatmap of the confusion matrix
+cm <- table(Predicted = predictions, Actual = test_data$label)
+cm_df <- as.data.frame(cm)
+
+ggplot(cm_df, aes(x = Actual, y = Predicted, fill = Freq)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = Freq), color = "black", size = 10) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(title = "Confusion Matrix: Did We Guess Right?")
+```
+
+# Top words per class (like most helpful clues)
+```{r top_words_plot}
+top_words <- cleaned %>%
+  count(label, word, sort = TRUE) %>%
+  group_by(label) %>%
+  slice_head(n = 10)   # top 10 words per class
+
+# Plot it
+ggplot(top_words, aes(x = reorder(word, n), y = n, fill = label)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~label, scales = "free") +
+  coord_flip() +
+  labs(title = "Top Words That Signal High vs Low Access",
+       x = "Words", y = "Count")
+```
